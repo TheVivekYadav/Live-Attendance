@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 tableBody.innerHTML += row;
             });
-
+            document.getElementById("main").classList.toggle("hidden");
             // Get attendance percentage and enable/disable button
             let percentage = parseFloat(found["Percentage"]);
             const button = document.getElementById("generateAdmitCard");
@@ -74,5 +74,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function generateAmitCard() {
         alert("Admit Card Generated Successfully!");
     }
+
+    let hamburger = document.getElementById("hamburger");
+    hamburger.addEventListener("click", ()=>{
+       document.getElementById("main").classList.toggle("hidden"); 
+    });
 });
 
