@@ -1,53 +1,78 @@
-let sheetData = [];
+document.addEventListener("DOMContentLoaded", function () {
+    let sheetData = [];
+    let found;
+    let rollno;
 
-// Load data from Google Sheet
-function loadData(){
-fetch("https://attendance-bice-eta.vercel.app/api/fetchSheet")
-    .then(response => response.text())
-    .then(csvText => {
-        sheetData = $.csv.toObjects(csvText);
-	firstRowData = sheetData[0];
-    })
-    .catch(error => console.error("Error loading CSV:", error));
-}
-loadData();
+    // Load data from Google Sheet
+    function loadData() {
+        fetch("https://attendance-bice-eta.vercel.app/api/fetchSheet")
+            .then(response => response.text())
+            .then(csvText => {
+                sheetData = $.csv.toObjects(csvText);
+                firstRowData = sheetData[0];
+            })
+            .catch(error => console.error("Error loading CSV:", error));
+    }
+    loadData();
 
-document.getElementById("refresh").addEventListener("click", loadData);
-// Handle form submission
-document.getElementById("attendance-form").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent page refresh
+    document.getElementById("refresh").addEventListener("click", loadData);
 
-    let rollno = document.getElementById("rollno").value.trim();
-    let found = sheetData[rollno];
+    // Handle form submission
+    document.getElementById("attendance-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent page refresh
 
-    let outputDiv = document.getElementById("output");
-    let tableBody = document.getElementById("data-table");
-    tableBody.innerHTML = "";
+        rollno = document.getElementById("rollno").value.trim();
+        found = sheetData[rollno]; // Find student
 
-    if (found) {
-        outputDiv.classList.remove("hidden");
+        let outputDiv = document.getElementById("output");
+        let tableBody = document.getElementById("data-table");
+        tableBody.innerHTML = "";
 
-	let entries = Object.entries(found).slice(2);
-        entries.forEach(([key, value]) => {
-	let row;
-            if (key === "Percentage") {
-                value += "%"; // Append % sign
+        if (found) {
+            outputDiv.classList.remove("hidden");
+
+            let entries = Object.entries(found).slice(2);
+            entries.forEach(([key, value]) => {
+                let row;
+                if (key === "Percentage") {
+                    value += "%"; // Append % sign
+                }
+
+                if (key === "Roll Number") {
+                    row = `<tr>
+                        <td><strong>${key.replace(/_/g, " ")}</strong></td>
+                        <td colspan=2>${value}</td>
+                    </tr>`;
+                } else {
+                    row = `<tr>
+                        <td><strong>${key.replace(/_/g, " ")}</strong></td>
+                        <td>${value}</td>	
+                        <td>${firstRowData[key]}</td>
+                    </tr>`;
+                }
+                tableBody.innerHTML += row;
+            });
+
+            // Get attendance percentage and enable/disable button
+            let percentage = parseFloat(found["Percentage"]);
+            const button = document.getElementById("generateAdmitCard");
+            if (percentage >= 75) {
+                button.disabled = false; // Enable button
+                button.addEventListener("click", function () {
+                    generateAmitCard();
+                });
+            } else {
+                button.disabled = true; // Disable button
+                button.classList.add('hidden');
             }
-		if (key === "Roll Number"){
-				row = `<tr>
-		<td><strong>${key.replace(/_/g, " ")}</strong></td>
-		<td colspan=2>${value}</td>
-            </tr>`;
-			}else{
-            row = `<tr>
-                <td><strong>${key.replace(/_/g, " ")}</strong></td>
-		<td>${value}</td>	
-		<td>${firstRowData[key]}</td>
-            </tr>`;}
-            tableBody.innerHTML += row;
-        });
-    } else {
-        outputDiv.classList.add("hidden");
-        alert("Roll number not found!");
+        } else {
+            outputDiv.classList.add("hidden");
+            alert("Roll number not found!");
+        }
+    });
+
+    function generateAmitCard() {
+        alert("Admit Card Generated Successfully!");
     }
 });
+
