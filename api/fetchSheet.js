@@ -8,9 +8,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        const sheetURL = process.env.SHEET_URL;
+        let sheetURL = process.env.SHEET_URL;
         const sem = req.query.sem || req.body.sem;
-        switch (parseInt(sem)){
+        switch (parseInt(sem, 10)){
             default:
                 sheetURL = process.env.SHEET_URL;
                 break;
