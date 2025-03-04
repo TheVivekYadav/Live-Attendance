@@ -1,4 +1,4 @@
-export default async function handler(req, res, sem) {
+export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -8,8 +8,8 @@ export default async function handler(req, res, sem) {
     }
 
     try {
-
-        switch (sem){
+        const sem = req.query.sem || req.body.sem;
+        switch (parseInt(sem)){
             default:
                 const sheetURL = process.env.SHEET_URL;
                 break;
