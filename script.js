@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let sheetData = [];
     let found;
     let rollno;
-
+    let sem;
     // Load data from Google Sheet
     function loadData() {
         fetch("https://attendance-bice-eta.vercel.app/api/fetchSheet")
@@ -13,10 +13,39 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error("Error loading CSV:", error));
     }
+function loadSheetResSem(){
+    sem = document.getElementById("semester").value; 
+    switch (sem){
+            case 2:
+                fetch("https://attendance-bice-eta.vercel.app/api/fetchSheet?sem=6")
+                .then(response => response.text())
+                .then(data => {
+                    const rows = data.split("\n").map(row => row.split(","));
+                    const table = document.getElementById("subjectTable");
+
+                    rows.forEach((row, index) => {
+                        if (row.length > 1) {
+                            const tr = document.createElement("tr");
+                            row.forEach(cell => {
+                                const td = document.createElement(index === 0 ? "th" : "td");
+                                td.textContent = cell.trim();
+                                tr.appendChild(td);
+                            });
+                            table.appendChild(tr);
+                        }
+                    });
+                })
+                .catch(error => console.error("Error fetching data:", error));
+                break;
+            default:
+                alert("Error No Sem details available");
+        }
+    }
+
     loadData();
-
-    document.getElementById("refresh").addEventListener("click", loadData);
-
+    if sem == 0{
+        document.getElementById("refresh").addEventListener("click", loadData);
+    }
     // Handle form submission
     document.getElementById("attendance-form").addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent page refresh

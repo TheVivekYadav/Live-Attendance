@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+export default async function handler(req, res, sem) {
     res.setHeader("Access-Control-Allow-Origin", "*"); // Allow all origins
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -8,7 +8,14 @@ export default async function handler(req, res) {
     }
 
     try {
-        const sheetURL = process.env.SHEET_URL;
+
+        switch (sem){
+            default:
+                const sheetURL = process.env.SHEET_URL;
+                break;
+            case 6:
+                const sheetURL = process.env.SHEET_URL6;
+    }
         const response = await fetch(sheetURL);
         const csvText = await response.text();
 
