@@ -15,7 +15,7 @@ export default async function handler(req, res) {
                 sheetURL = process.env.SHEET_URL;
                 break;
             case 6:
-                sheetURL = process.env.SHEET_URL6;
+                sheetURL = process.env["SHEET_URL6"];
     }
         const response = await fetch(sheetURL);
         const csvText = await response.text();
