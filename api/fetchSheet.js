@@ -8,13 +8,14 @@ export default async function handler(req, res) {
     }
 
     try {
+        const sheetURL = process.env.SHEET_URL;
         const sem = req.query.sem || req.body.sem;
         switch (parseInt(sem)){
             default:
-                const sheetURL = process.env.SHEET_URL;
+                sheetURL = process.env.SHEET_URL;
                 break;
             case 6:
-                const sheetURL = process.env.SHEET_URL6;
+                sheetURL = process.env.SHEET_URL6;
     }
         const response = await fetch(sheetURL);
         const csvText = await response.text();
