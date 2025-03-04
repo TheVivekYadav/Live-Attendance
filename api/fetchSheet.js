@@ -9,15 +9,22 @@ export default async function handler(req, res) {
 
     try {
         let sheetURL = process.env.SHEET_URL;
-        const sem = req.query.sem || req.body.sem;
-        switch (parseInt(sem, 10)){
+        const sem = parseInt(req.query.sem || req.body.sem, 10) || 0;
+        switch (sem){
             default:
                 sheetURL = process.env.SHEET_URL;
                 break;
             case 6:
                 sheetURL = process.env["SHEET_URL6"];
     }
+        if (!sheetURL) { // ✅ Prevent undefined URLs
+            throw new Error("Invalid or missing Google Sheet URL.");
+        }
         const response = await fetch(sheetURL);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch CSV: ${response.statusText}`);
+        }
+
         const csvText = await response.text();
 
         res.setHeader('Content-Type', 'text/plain');
