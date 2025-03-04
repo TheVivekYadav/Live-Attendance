@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let sem;
     // Load data from Google Sheet
     function loadData() {
-        fetch("https://attendance-bice-eta.vercel.app/api/fetchSheet")
+        fetch("https://attendance-bice-eta.vercel.app/api/fetchSheet?sem=0")
             .then(response => response.text())
             .then(csvText => {
                 sheetData = $.csv.toObjects(csvText);
@@ -15,9 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 function loadSheetResSem(){
     sem = document.getElementById("semester").value; 
-    switch (sem){
-            case 2:
-                fetch("https://attendance-bice-eta.vercel.app/api/fetchSheet?sem=6")
+                fetch(`https://attendance-bice-eta.vercel.app/api/fetchSheet?sem=${sem || 6}`)
                 .then(response => response.text())
                 .then(data => {
                     const rows = data.split("\n").map(row => row.split(","));
@@ -39,7 +37,6 @@ function loadSheetResSem(){
                 break;
             default:
                 alert("Error No Sem details available");
-        }
     }
 
     loadData();
